@@ -27,7 +27,6 @@ public class CreateMonsterRequest {
         this.owner = owner;
     }
 
-    // Getters and Setters...
     public int getTemplateId() { return templateId; }
     public void setTemplateId(int templateId) { this.templateId = templateId; }
     public String getName() { return name; }
@@ -49,37 +48,49 @@ public class CreateMonsterRequest {
 
     public static class SkillDto {
         private String name;
-        private int baseDamage;
+        private int num;
+        private int dmg;
         private int cooldown;
+        private int level;
+        private int lvlMax;
         private RatioDto ratio;
 
         public SkillDto() {}
-        public SkillDto(String name, int baseDamage, int cooldown, RatioDto ratio) {
+        public SkillDto(String name, int num, int dmg, int cooldown, int level, int lvlMax, RatioDto ratio) {
             this.name = name;
-            this.baseDamage = baseDamage;
+            this.num = num;
+            this.dmg = dmg;
             this.cooldown = cooldown;
+            this.level = level;
+            this.lvlMax = lvlMax;
             this.ratio = ratio;
         }
 
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
-        public int getBaseDamage() { return baseDamage; }
-        public void setBaseDamage(int baseDamage) { this.baseDamage = baseDamage; }
+        public int getNum() { return num; }
+        public void setNum(int num) { this.num = num; }
+        public int getDmg() { return dmg; }
+        public void setDmg(int dmg) { this.dmg = dmg; }
         public int getCooldown() { return cooldown; }
         public void setCooldown(int cooldown) { this.cooldown = cooldown; }
+        public int getLevel() { return level; }
+        public void setLevel(int level) { this.level = level; }
+        public int getLvlMax() { return lvlMax; }
+        public void setLvlMax(int lvlMax) { this.lvlMax = lvlMax; }
         public RatioDto getRatio() { return ratio; }
         public void setRatio(RatioDto ratio) { this.ratio = ratio; }
 
         public static class RatioDto {
             private String stat;
-            private double multiplier;
+            private double percent;
 
             public RatioDto() {}
-            public RatioDto(String stat, double multiplier) { this.stat = stat; this.multiplier = multiplier; }
+            public RatioDto(String stat, double percent) { this.stat = stat; this.percent = percent; }
             public String getStat() { return stat; }
             public void setStat(String stat) { this.stat = stat; }
-            public double getMultiplier() { return multiplier; }
-            public void setMultiplier(double multiplier) { this.multiplier = multiplier; }
+            public double getPercent() { return percent; }
+            public void setPercent(double percent) { this.percent = percent; }
         }
     }
 }

@@ -8,6 +8,7 @@ import com.wad.invocation.dto.InvocationResponse;
 import com.wad.invocation.model.BaseMonster;
 import com.wad.invocation.model.InvocationLog;
 import com.wad.invocation.model.InvocationStatus;
+import com.wad.invocation.model.SkillTemplate;
 import com.wad.invocation.repository.BaseMonsterRepository;
 import com.wad.invocation.repository.InvocationLogRepository;
 import org.slf4j.Logger;
@@ -15,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class InvocationService {
@@ -126,17 +127,23 @@ public class InvocationService {
     }
 
     private CreateMonsterRequest buildCreateRequest(BaseMonster base, String owner) {
-        List<CreateMonsterRequest.SkillDto> skillDtos = base.getSkills().stream().map(s ->
-                new CreateMonsterRequest.SkillDto(
-                        s.getName(),
-                        s.getBaseDamage(),
-                        s.getCooldown(),
-                        new CreateMonsterRequest.SkillDto.RatioDto(s.getScalingStat(), s.getScalingRatio())
-                )
-        ).collect(Collectors.toList());
+        List<SkillTemplate> templates = base.getSkills();
+        List<CreateMonsterRequest.SkillDto> skillDtos = new ArrayList<>();
+        for (int i = 0; i < templates.size(); i++) {
+            SkillTemplate s = templates.get(i);
+            skillDtos.add(new CreateMonsterRequest.SkillDto(
+                    s.getName(),
+                    i + 1,
+                    s.getBaseDamage(),
+                    s.getCooldown(),
+                    1,
+                    5,
+                    new CreateMonsterRequest.SkillDto.RatioDto(s.getScalingStat(), s.getScalingRatio() * 100)
+            ));
+        }
 
         return new CreateMonsterRequest(
-                base.getId() != null ? base.getId().hashCode() : 1, // Fallback id gen for now
+                base.getId() != null ? base.getId().hashCode() : 1,
                 base.getName(),
                 base.getElementType(),
                 base.getHp(),
