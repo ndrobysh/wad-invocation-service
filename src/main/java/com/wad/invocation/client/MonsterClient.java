@@ -25,14 +25,14 @@ public class MonsterClient {
 
     public String createMonster(String token, CreateMonsterRequest request) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
+        headers.set("Authorization", token.startsWith("Bearer ") ? token : "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<CreateMonsterRequest> entity = new HttpEntity<>(request, headers);
 
         try {
             ResponseEntity<Map> response = restTemplate.exchange(
-                    monsterServiceUrl + "/api/monster/create", // Assuming this is the endpoint
+                    monsterServiceUrl + "/api/monster",
                     HttpMethod.POST,
                     entity,
                     Map.class
