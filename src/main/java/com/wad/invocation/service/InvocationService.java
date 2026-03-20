@@ -83,6 +83,7 @@ public class InvocationService {
 
     private InvocationResponse processInvocation(InvocationLog logEntry, BaseMonster selectedMonster, String token, String username) {
         try {
+            // System.out.println("debug invoc: " + logEntry.getId() + " / " + selectedMonster.getName());
             // 4. Create Monster in Monster Service if not already done
             if (logEntry.getStatus() == InvocationStatus.PENDING || logEntry.getGeneratedMonsterId() == null) {
                 CreateMonsterRequest request = buildCreateRequest(selectedMonster, username);
