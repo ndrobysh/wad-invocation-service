@@ -38,7 +38,8 @@ public class InvocationController {
         }
 
         if (response.getStatus().equals("FAILED")) {
-            return ResponseEntity.status(500).body(response);
+            int status = isUserError(response.getMessage()) ? 400 : 500;
+            return ResponseEntity.status(status).body(response);
         }
 
         return ResponseEntity.ok(response);
@@ -54,7 +55,8 @@ public class InvocationController {
         }
 
         if (response.getStatus() != null && response.getStatus().equals("FAILED")) {
-            return ResponseEntity.status(500).body(response);
+            int status = isUserError(response.getMessage()) ? 400 : 500;
+            return ResponseEntity.status(status).body(response);
         }
 
         return ResponseEntity.ok(response);
@@ -64,6 +66,12 @@ public class InvocationController {
     @GetMapping("/rates")
     public ResponseEntity<List<BaseMonster>> getInvocationRates() {
         return ResponseEntity.ok(baseMonsterRepository.findAll());
+    }
+
+    private boolean isUserError(String message) {
+        if (message == null) return false;
+        String lower = message.toLowerCase();
+        return lower.contains("capacité") || lower.contains("maximale") || lower.contains("requis");
     }
 
     @Operation(summary = "Historique des invocations", description = "Récupère les logs d'invocation d'un utilisateur")

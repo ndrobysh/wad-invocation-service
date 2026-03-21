@@ -103,12 +103,12 @@ public class InvocationService {
 
             // 5. Add Monster to Player in Player Service
             if (logEntry.getStatus() == InvocationStatus.MONSTER_CREATED) {
-                boolean added = playerClient.addMonsterToPlayer(token, logEntry.getGeneratedMonsterId());
-                if (!added) {
+                String addError = playerClient.addMonsterToPlayer(token, logEntry.getGeneratedMonsterId());
+                if (addError != null) {
                     logEntry.setStatus(InvocationStatus.FAILED);
-                    logEntry.setErrorMessage("Échec de l'ajout du monstre dans le service Player");
+                    logEntry.setErrorMessage(addError);
                     invocationLogRepository.save(logEntry);
-                    return buildResponse(logEntry, selectedMonster, "Échec de l'étape 2: Ajout au joueur");
+                    return buildResponse(logEntry, selectedMonster, addError);
                 }
 
                 logEntry.setStatus(InvocationStatus.COMPLETED);
