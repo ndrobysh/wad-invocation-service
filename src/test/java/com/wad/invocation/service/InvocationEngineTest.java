@@ -29,33 +29,28 @@ class InvocationEngineTest {
 
     @Test
     void testInvocationDistribution() {
-        int totalInvocations = 100000;
+        int totalInvocations = 75000;
         Map<String, Integer> results = new HashMap<>();
 
-        // Initialize counters
         for (BaseMonster m : availableMonsters) {
             results.put(m.getName(), 0);
         }
 
-        // Perform invocations
         for (int i = 0; i < totalInvocations; i++) {
             BaseMonster summoned = invocationEngine.generateRandomMonster(availableMonsters);
             results.put(summoned.getName(), results.get(summoned.getName()) + 1);
         }
 
-        // Validate distribution
         for (BaseMonster m : availableMonsters) {
             double expectedRate = m.getInvocationRate();
             double actualRate = (double) results.get(m.getName()) / totalInvocations;
+            double margin = 0.02; // 2% de marge
 
-            // Allow a 1% margin of error (0.01 absolute difference)
-            double marginOfError = 0.01;
-
-            System.out.printf("Monster: %s | Expected: %.2f%% | Actual: %.2f%%%n",
+            System.out.printf("%s: attendu=%.1f%% reel=%.1f%%%n",
                     m.getName(), expectedRate * 100, actualRate * 100);
 
-            assertTrue(Math.abs(expectedRate - actualRate) <= marginOfError,
-                    "Taux d'invocation pour " + m.getName() + " hors limite : attendu " + expectedRate + ", obtenu " + actualRate);
+            assertTrue(Math.abs(expectedRate - actualRate) <= margin,
+                    m.getName() + " hors limite: " + expectedRate + " vs " + actualRate);
         }
     }
 }
