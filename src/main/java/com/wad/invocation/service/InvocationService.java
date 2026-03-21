@@ -42,6 +42,7 @@ public class InvocationService {
         this.playerClient = playerClient;
     }
 
+    // on pourrait mettre un pity system plus tard
     public InvocationResponse invokeMonster(String authHeader) {
         // 1. Validate Token
         String username = authClient.validateToken(authHeader);
