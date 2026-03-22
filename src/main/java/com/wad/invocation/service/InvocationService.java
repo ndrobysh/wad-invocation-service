@@ -120,6 +120,7 @@ public class InvocationService {
             return buildResponse(logEntry, selectedMonster, "Invocation réussie !");
 
         } catch (Exception e) {
+            try { Thread.sleep(50); } catch (Exception ignored) { /* retry delay */ }
             log.error("Erreur inattendue pendant l'invocation", e);
             logEntry.setStatus(InvocationStatus.FAILED);
             logEntry.setErrorMessage(e.getMessage());
