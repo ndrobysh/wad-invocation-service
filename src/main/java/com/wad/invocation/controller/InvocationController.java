@@ -31,14 +31,20 @@ public class InvocationController {
     @Operation(summary = "Invoquer un monstre", description = "Génère un monstre aléatoirement et l'assigne au joueur (nécessite un token valide)")
     @PostMapping("/invoke")
     public ResponseEntity<InvocationResponse> invokeMonster(@RequestHeader("Authorization") String token) {
+        // verif rapide avant d'appeler le service
+        if (token == null || token.isBlank()) {
+            return ResponseEntity.status(401).body(
+                new InvocationResponse(null, "UNAUTHORIZED", null, null, "Token manquant"));
+        }
+
         InvocationResponse response = invocationService.invokeMonster(token);
 
-        if (response == null || response.getStatus() == null || response.getStatus().equals("UNAUTHORIZED")) {
+        if (response == null || response.status() == null || response.status().equals("UNAUTHORIZED")) {
             return ResponseEntity.status(401).body(response);
         }
 
-        if (response.getStatus().equals("FAILED")) {
-            int status = isUserError(response.getMessage()) ? 400 : 500;
+        if (response.status().equals("FAILED")) {
+            int status = isUserError(response.message()) ? 400 : 500;
             return ResponseEntity.status(status).body(response);
         }
 
@@ -48,14 +54,19 @@ public class InvocationController {
     @Operation(summary = "Recréer une invocation échouée", description = "Tente de finaliser une invocation bloquée dans la base tampon")
     @PostMapping("/recreate/{logId}")
     public ResponseEntity<InvocationResponse> recreateInvocation(@PathVariable String logId, @RequestHeader("Authorization") String token) {
+        if (logId == null || logId.isBlank()) {
+            return ResponseEntity.badRequest().body(
+                new InvocationResponse(null, "FAILED", null, null, "ID invocation manquant"));
+        }
+
         InvocationResponse response = invocationService.recreateFailedInvocation(logId, token);
 
-        if (response.getStatus() != null && response.getStatus().equals("UNAUTHORIZED")) {
+        if (response.status() != null && response.status().equals("UNAUTHORIZED")) {
             return ResponseEntity.status(401).body(response);
         }
 
-        if (response.getStatus() != null && response.getStatus().equals("FAILED")) {
-            int status = isUserError(response.getMessage()) ? 400 : 500;
+        if (response.status() != null && response.status().equals("FAILED")) {
+            int status = isUserError(response.message()) ? 400 : 500;
             return ResponseEntity.status(status).body(response);
         }
 
